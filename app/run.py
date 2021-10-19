@@ -1,9 +1,13 @@
 import json
 import plotly
 import pandas as pd
+import re
 
+import nltk
 from nltk.stem import WordNetLemmatizer
+from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 
 from flask import Flask
 from flask import render_template, request, jsonify
@@ -12,25 +16,36 @@ from plotly.graph_objs import Bar
 import joblib
 from sqlalchemy import create_engine
 
-
 app = Flask(__name__)
 
-
-def tokenize(text):
-    tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
-
-    clean_tokens = []
-    for tok in tokens:
-        clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-        clean_tokens.append(clean_tok)
-
-    return clean_tokens
-
+# NLTK package download
+nltk.download('stopwords')
 
 # Load data
 engine = create_engine('sqlite:///../data/DisasterMessages.db')
 df = pd.read_sql_table('Messages', engine)
+
+
+def tokenize(text):
+    # Removing punctuation and numbers
+    text = re.sub(r"[^a-zA-Z]", " ", text)
+    # Tokenize text
+    tokens = word_tokenize(text)
+    # Removing stop words
+    tokens = [w for w in tokens if w not in stopwords.words("english")]
+    # Initiate lemmatizer
+    # lemmatizer = WordNetLemmatizer()
+    stemmizer = PorterStemmer()
+    # Iterate through each token
+    clean_tokens = []
+    for tok in tokens:
+        # Stemmizing, normalize case, and remove leading/trailing white space
+        clean_tok = stemmizer.stem(tok.lower().strip())
+        # Lemmatize, normalize case, and remove leading/trailing white space
+        # clean_tok = lemmatizer.lemmatize(tok.lower().strip(), pos='n')  # Lemmatizing nouns
+        clean_tokens.append(clean_tok)
+    return clean_tokens
+
 
 # Load model
 model = joblib.load("../models/model.pkl")
