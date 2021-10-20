@@ -53,7 +53,7 @@ def tokenize(text):
     - It applies "stemmizing"
      It removes stopwords
 
-    :param text: Input textx
+    :param text: Input text
     :return: clean_tokens: List of clean words extracted from text
     """
     # Removing punctuation and numbers
@@ -76,21 +76,22 @@ def tokenize(text):
     return clean_tokens
 
 
-def build_model(scoring='precision_weighted'):
+def build_model(scoring='recall_micro'):
     """
     Creates a GridSearch object based on a TfidVectorizer - RandomForestClassifier pipeline
 
     :param scoring: metric to be used as scoring input for the GridSearch object
     :return: cv: GridSearch object to be used as model
     """
-    pipeline = Pipeline([('tfidf_vect', TfidfVectorizer(tokenizer=tokenize)),
-                         ('clf', MultiOutputClassifier(RandomForestClassifier())),
+    pipeline = Pipeline([('tfidf_vect', TfidfVectorizer(tokenizer=tokenize, use_idf=False)),
+                         ('clf', RandomForestClassifier(n_jobs=4)),
                          ])
     parameters = {
-        "tfidf_vect__use_idf": [True, False],
-        "clf__estimator__n_estimators": [10, 20]
+        "clf__n_estimators": [120, 150, 200],
+        "clf__bootstrap": [True, False],
+        "clf__max_features": [0.8, 0.9, "sqrt"],
     }
-    cv = GridSearchCV(pipeline, param_grid=parameters, scoring=scoring, refit=True)
+    cv = GridSearchCV(pipeline, param_grid=parameters, scoring=scoring, verbose=3, cv=2)
     return cv
 
 
@@ -134,7 +135,7 @@ def main():
     - Saving the most performing model into a pickle file
 
     Example on how to run the script:
-        python train_classifier.py ../data/DisasterResponse.db classifier.pkl
+        python train_classifier.py ../data/DisasterMessages.db classifier.pkl
 
     """
     if len(sys.argv) == 3:

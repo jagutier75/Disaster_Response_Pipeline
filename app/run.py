@@ -134,7 +134,7 @@ def tokenize(text):
     - It applies "stemmizing"
      It removes stopwords
 
-    :param text: Input textx
+    :param text: Input text
     :return: clean_tokens: List of clean words extracted from text
     """
     # Removing punctuation and numbers
