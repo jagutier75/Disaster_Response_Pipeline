@@ -26,6 +26,15 @@ nltk.download('stopwords')
 
 
 def load_data(database_filepath):
+    """
+    Reads mySQL database and loads the information into a DataFrame
+
+    :param database_filepath: Path to the database
+    :return:
+    - X - df containing the features data
+    - Y - df containing the class/category data
+    - categories_names - Names of the target classes
+    """
     # Load data from database
     file_path = 'sqlite:///' + database_filepath
     engine = create_engine(file_path)
@@ -33,10 +42,20 @@ def load_data(database_filepath):
     X = df['message']
     target = [col for col in list(df.columns) if col not in ['id', 'message', 'original', 'genre']]
     Y = df[target]
-    return X, Y, Y.columns
+    categories_names = Y.columns
+    return X, Y, categories_names
 
 
 def tokenize(text):
+    """
+    Takes the text input and performs the following actions:
+    - Remove all punctuation and numbers
+    - It applies "stemmizing"
+     It removes stopwords
+
+    :param text: Input textx
+    :return: clean_tokens: List of clean words extracted from text
+    """
     # Removing punctuation and numbers
     text = re.sub(r"[^a-zA-Z]", " ", text)
     # Tokenize text
@@ -58,6 +77,12 @@ def tokenize(text):
 
 
 def build_model(scoring='precision_weighted'):
+    """
+    Creates a GridSearch object based on a TfidVectorizer - RandomForestClassifier pipeline
+
+    :param scoring: metric to be used as scoring input for the GridSearch object
+    :return: cv: GridSearch object to be used as model
+    """
     pipeline = Pipeline([('tfidf_vect', TfidfVectorizer(tokenizer=tokenize)),
                          ('clf', MultiOutputClassifier(RandomForestClassifier())),
                          ])
@@ -70,6 +95,13 @@ def build_model(scoring='precision_weighted'):
 
 
 def evaluate_model(model, X_test, Y_test):
+    """
+    Creates a classification report and a  confusion matrix for the model to be evaluated.
+
+    :param model: model to be evaluated
+    :param X_test: df containing the features from the test set data
+    :param Y_test: df containing the labels/targets from the test set data
+    """
     Y_pred = model.predict(X_test)
     for i, col in enumerate(Y_test):
         y_true = Y_test[col]
@@ -81,12 +113,30 @@ def evaluate_model(model, X_test, Y_test):
 
 
 def save_model(model, model_filepath):
+    """
+    Saves ML model into a pickle file
+
+    :param model: model to be saved
+    :param model_filepath: filepath for the output pickle file
+    """
     filename = model_filepath
     # Saving only the best estimator from GridSearch
     pickle.dump(model.best_estimator_, open(filename, 'wb'))
 
 
 def main():
+    """
+    This script runs a ML pipeline running the following steps:
+    - Loading cleaned data from a mySQL database
+    - Builds a ML model
+    - Separates the input data into training and test sets
+    - Fits the model into the training set  (choosing the best estimator via GridSearch)
+    - Saving the most performing model into a pickle file
+
+    Example on how to run the script:
+        python train_classifier.py ../data/DisasterResponse.db classifier.pkl
+
+    """
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))

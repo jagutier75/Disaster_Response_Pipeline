@@ -19,6 +19,17 @@ from sqlalchemy import create_engine
 
 
 def figures_rendering(df):
+    """
+    Creates a list of figures based on the input DataFrame data:
+
+    - Message quantity by genre category
+    - Category with the highest number of messages
+    - Number of positive/negative messages by category in the dataset
+    - Heatmap showing the most related categories based on positive labels
+
+    :param df: DataFrame to extract the information from
+    :return: list of figures to be plotted
+    """
     # Extract data needed for visuals
 
     # ----- MESSAGE BY GENRE ----- #
@@ -117,6 +128,15 @@ def figures_rendering(df):
 
 
 def tokenize(text):
+    """
+    Takes the text input and performs the following actions:
+    - Remove all punctuation and numbers
+    - It applies "stemmizing"
+     It removes stopwords
+
+    :param text: Input textx
+    :return: clean_tokens: List of clean words extracted from text
+    """
     # Removing punctuation and numbers
     text = re.sub(r"[^a-zA-Z]", " ", text)
     # Tokenize text
@@ -152,7 +172,10 @@ model = joblib.load("../models/model.pkl")
 @app.route('/')
 @app.route('/index')
 def index():
-    
+    """
+    Main webpage. It sends the figures and idx to be used for plotting using Plotly
+    :return: None
+    """
     # ----- VISUALS RENDERING ----- #
     figures = figures_rendering(df)
     # Plot ids for the html id tag
@@ -168,6 +191,11 @@ def index():
 # Web page that handles user query and displays model results
 @app.route('/go')
 def go():
+    """
+    Receives a query from the /index page containing the message to be classified. it performs a prediction
+    and returns the prediction labels to be rendered through the /go.html page
+    :return:
+    """
     # Save user input in query
     query = request.args.get('query', '') 
 

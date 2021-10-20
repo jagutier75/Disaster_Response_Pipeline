@@ -8,6 +8,15 @@ pd.options.mode.chained_assignment = None  # default='warn'
 
 
 def positive_label_count(df, threshold=2.0, col_to_ignore=None):
+    """
+    This function counts the number of positive labels for each class (considering the cardinality of each class = 2),
+    and prints the name of the classes that are below a certain threshold.
+
+    :param df: DataFrame containing the columns to be counted
+    :param threshold: Columns containing less positive labels than this threshold will be printed
+    :param col_to_ignore: Columns not to be considered in the analysis
+    :return: None
+    """
     # Counting the number of positive labels in each target column
     if col_to_ignore is None:
         col_to_ignore = ['id', 'message', 'original', 'genre']
@@ -24,6 +33,16 @@ def positive_label_count(df, threshold=2.0, col_to_ignore=None):
 
 
 def merge_categories(df, col_merge_pairs):
+    """
+    This function helps to copy the positive labels in the column specified as key in the col_merge_paris dict
+    to the column specified as value in the same dictionary in a dataframe. Once the copy is done, the column specified
+    in key will be dropped from the original dataframe.
+
+    :param df: Original dataframe
+    :param col_merge_pairs: dictionary containing column names. The key contains the column to remove once the positive labels
+    are copied to the column specified as value in the dictionary.
+    :return: Original dataframe with the columns removed
+    """
     # Merging related columns (columns with low number of positive labels with similar columns)
     for key, value in col_merge_pairs.items():
         df.loc[df[key] == 1, value] = 1
@@ -32,6 +51,13 @@ def merge_categories(df, col_merge_pairs):
 
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    Merge data from two CSV files to a pandas dataframe
+
+    :param messages_filepath: CSV containing the messages
+    :param categories_filepath: CSV containing the categories (targets) for each message
+    :return: DataFrame with the merged data
+    """
     # Load messages dataset
     messages = pd.read_csv(messages_filepath)
     # Load categories dataset
@@ -42,6 +68,18 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+    """
+    Performs cleaning algorithms to the DataFrame df:
+
+    - Creates individual columns for each category in the "categories" column
+    - Verifies that each target column has a cardinality of 2 (binary)
+    - Removes duplicates
+    - Removes target columns containing just a single label
+    - Merge target columns for those columns containing few positive labels with similar target columns
+
+    :param df: Original DataFrame
+    :return: df: Cleaned DataFrame
+    """
     # Create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(';', expand=True)
 
@@ -101,12 +139,29 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    """
+    Saves a DataFrame into a mySQL database
+
+    :param df: DataFrame to save
+    :param database_filename: Path to the database
+    """
     filepath = 'sqlite:///' + database_filename
     engine = create_engine(filepath)
     df.to_sql('Messages', engine, index=False, if_exists='replace')
 
 
 def main():
+    """
+    The main function performs the complete ETL pipeline:
+
+    - Extract: Read from CSV files both messages and categories
+    - Transform: Cleans the resulting DataFrame
+    - Load: Saves the resulting DataFrame into a mySQL database
+
+    Example for calling this script:
+    python process_data.py disaster_messages.csv disaster_categories.csv DisasterResponse.db'
+
+    """
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
