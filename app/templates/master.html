@@ -4,31 +4,46 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <title>Disasters</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <!---
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://d14fo0winaifog.cloudfront.net/plotly-basic.js"></script>
-    <script>src="https://cdn.plot.ly/plotly-latest.min.js"</script>
-    --->
 </head>
 
 <body>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/">Disaster Response Project</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="https://www.udacity.com/">Made with Udacity</a></li>
-                <li><a href="https://github.com/">Contact</a></li>
-            </ul>
-        </div>
+<!-- Navbar: Expandable for large screens (lg) --->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!--- Navigation bar main title - presented as header --->
+    <a class="navbar-brand mb-0 h1" href="/index">
+        <img src="/static/img/flood-icon.svg" width="25" height="25" class="d-inline-block align-top mr-1 mt-1" alt="">
+        Disaster Response Project
+    </a>
+    <!--- You give the toogling behavior (activated/not activated) to the elements with id #navbarSupportedContent --->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!--- Collapse-enabled nav element - toggle behavior controlled by previous element  - width 100 --->
+    <div class="navbar-collapse collapse w-100 dual-collapse2 navbarSupportedContent">
+        <!--- Navigation bar main element - Aligned to the right --->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="https://github.com/jagutier75">
+                    <img src="/static/img/githublogo.png" width="25" height="25" class="d-inline-block align-top mr-1" alt="">
+                    Github
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.linkedin.com/in/jagutier75/">
+                    <img src="/static/img/linkedinlogo.png" width="28" height="25" class="d-inline-block align-top mr-1" alt="">
+                    LinkedIn
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <img src="https://github.com/jagutier75.png" alt="mdo" width="25" height="25" class="rounded-circle mb-2 mr-1">
+                    Contact
+                </a>
+            </li>
+        </ul>
     </div>
 </nav>
 
@@ -38,13 +53,12 @@
         <h1 class="text-center">Disaster Response Project</h1>
         <p class="text-center">Analyzing message data for disaster response</p>
         <hr />
-      
         <div class="row">
             <div class="col-lg-12 form-group-lg">
                 <form action="/go" method="get">
                     <input type="text" class="form-control form-control-lg" name="query" placeholder="Enter a message to classify">
-                    <div class="col-lg-offset-5">
-                        <button type="submit" class="btn btn-lg btn-success">Classify Message</button>
+                    <div class="col-lg-offset-2 text-center">
+                        <button type="submit" class="btn btn-lg btn-primary mt-4 mb-4">Classify Message</button>
                     </div>
                 </form>
             </div>
@@ -55,24 +69,56 @@
     </div>
 </div>
 
-<div class="container">
-    {% block content %}
-        <div class="page-header">
-            <h1 class="text-center">Overview of Training Dataset</h1>
-        </div>
-    {% endblock %}
-
-    {% for id in ids %}
-        <div id="{{id}}"></div>
-    {% endfor %}
+{% block content %}
+<div class="row">
+    <div class="col page-header text-center">
+        <h1 class="text-center">Overview of the Dataset</h1>
+    </div>
 </div>
+<div class="row">
+    <div class="col">
+        <div class="container" style="height: 500px;">
+            <div id="{{ids[2]}}"></div>
+            <hr />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="container" style="height: 500px;">
+            <div id="{{ids[1]}}"></div>
+            <hr />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="container" style="height: 500px;">
+            <div id="{{ids[3]}}"></div>
+            <hr />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="container" style="height: 500px;">
+            <div id="{{ids[0]}}"></div>
+            <hr />
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
 
 
 <!-- Script for JQuery -->
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
 <!-- Scripts for Bootstrap: Popper and JS -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.min.js" integrity="sha384-PsUw7Xwds7x08Ew3exXhqzbhuEYmA2xnwc8BuD6SEr+UmEHlX8/MCltYEodzWA4u" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <!-- Script for Plotly using JS -->
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
@@ -89,6 +135,30 @@
                 figures[i].data,
                 figures[i].layout || {});
         }
+
+        // MAKE THE PLOTS RESPONSIVE
+        (function() {
+          var d3 = Plotly.d3;
+          var WIDTH_IN_PERCENT_OF_PARENT = 100,
+              HEIGHT_IN_PERCENT_OF_PARENT = 90;
+
+          var gd3 = d3.selectAll(".responsive-plot")
+              .style({
+                width: WIDTH_IN_PERCENT_OF_PARENT + '%',
+                'margin-left': (100 - WIDTH_IN_PERCENT_OF_PARENT) / 2 + '%',
+
+                height: HEIGHT_IN_PERCENT_OF_PARENT + 'vh',
+                'margin-top': (100 - HEIGHT_IN_PERCENT_OF_PARENT) / 2 + 'vh'
+              });
+
+          var nodes_to_resize = gd3[0]; //not sure why but the goods are within a nested array
+          window.onresize = function() {
+            for (var i = 0; i < nodes_to_resize.length; i++) {
+              Plotly.Plots.resize(nodes_to_resize[i]);
+            }
+          };
+
+        })();
     </script>
 </footer>
 

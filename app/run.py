@@ -110,12 +110,16 @@ def figures_rendering(df):
                            Bar(name='Positive labels (1)', x=pos_neg_msg_cat, y=pos_neg_y1)])
     graph_3.update_layout(title='Number of positive and negative labels per category',
                           title_x=0.5,
-                          barmode='stack')  # Change the bar mode; other option barmode='group'
+                          xaxis=dict(title='Categories', ),
+                          yaxis=dict(title='# of messages'),
+                          barmode='stack',)  # Change the bar mode; other option barmode='group'
 
     graph_4 = Figure(data=Heatmap(z=hm_array_norm,
                                   x=ord_col,
                                   y=ord_col,
                                   hoverongaps=False))
+    graph_4.update_layout(title='Heatmap of the most related categories',
+                          title_x=0.5,)
 
     # Append all charts to the figures list
     figures = []
