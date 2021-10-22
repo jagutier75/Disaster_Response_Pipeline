@@ -20,12 +20,12 @@ The project consists on three main scripts:
 - **process_data.py**: This script reads the csv files and, performs some transformation on the data and saves it into a database. Here is an example on how to run the script: 
 
     ```bash
-    python process_data.py disaster_messages.csv disaster_categories.csv DisasterResponse.db'
+    python process_data.py disaster_messages.csv disaster_categories.csv DisasterMessages.db'
     ```
 - **train_classifier.py**: This script reads the database, performs cleaning operations on the dataset, trains a machine learning pipeline (using GridSearch) and stores the model into a pickle file. Here is an example on how to run the script: 
 
     ```bash
-    python train_classifier.py ../data/DisasterMessages.db classifier.pkl
+    python train_classifier.py ../data/DisasterMessages.db model.pkl
     ``` 
 
 - **run.py**: This script runs a Flask application allowing us to visualize a website. It will read the database and create some figures to be loaded to the website, and will also load the model in order to perform predictions based on the website input. From the python/Anaconda terminal you have to run:

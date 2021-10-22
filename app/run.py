@@ -6,7 +6,6 @@ import re
 
 import nltk
 from nltk.stem import WordNetLemmatizer
-from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
@@ -148,15 +147,12 @@ def tokenize(text):
     # Removing stop words
     tokens = [w for w in tokens if w not in stopwords.words("english")]
     # Initiate lemmatizer
-    # lemmatizer = WordNetLemmatizer()
-    stemmizer = PorterStemmer()
+    lemmatizer = WordNetLemmatizer()
     # Iterate through each token
     clean_tokens = []
     for tok in tokens:
-        # Stemmizing, normalize case, and remove leading/trailing white space
-        clean_tok = stemmizer.stem(tok.lower().strip())
         # Lemmatize, normalize case, and remove leading/trailing white space
-        # clean_tok = lemmatizer.lemmatize(tok.lower().strip(), pos='n')  # Lemmatizing nouns
+        clean_tok = lemmatizer.lemmatize(tok.lower().strip())
         clean_tokens.append(clean_tok)
     return clean_tokens
 
